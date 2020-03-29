@@ -7,8 +7,10 @@ docker-compose up -d
 
 访问：
 
-- jellyfin: http://your-ip:8096
 - aria2: http://your-ip
+- jellyfin: http://your-ip:8096
+- TinyMediaManager: http://you-ip:5800
+- kodi: http://your-ip:8080
 
 ## 工具介绍
 
