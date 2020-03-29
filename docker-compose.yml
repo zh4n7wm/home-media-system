@@ -1,0 +1,79 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./AriaNg:/usr/share/nginx/html
+
+  aria2-pro:
+    image: p3terx/aria2-pro
+    restart: unless-stopped
+    environment:
+      - PUID=${UID}
+      - PGID=${GID}
+      - RPC_SECRET=secret
+    ports:
+      - 6800:6800
+      - 6888:6888
+      - 6888:6888/udp
+    volumes:
+      - ./aria2-config:/config
+      - /downloads:/downloads
+
+  jellyfin:
+    # image: jellyfin/jellyfin
+    image: jellyfin-locale-utf8
+    build:
+      context: ./jellyfin
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    network_mode: host  # 否则，dlna 无法工作
+    ports:
+      - 8096:8096
+      - 8920:8920
+      - 1900:1900/udp
+    volumes:
+      - /data/jellyfin/config:/config
+      - /data/jellyfin/cache:/cache
+      - /data/jellyfin/video:/video
+      - /mnt/movies:/movies
+      - /mnt/tv-shows:/tv-shows
+      - /mnt/.av:/av
+      - /downloads/movies:/new-movies
+      - /downloads/tv-series:/tv-series
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+
+  tinymediamanager:
+    image: romancin/tinymediamanager
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - 5800:5800
+      - 5900:5900
+    volumes:
+      - /data/tinymediamanager/config:/config
+      - /mnt/movies:/movies
+      - /mnt/tv-shows:/tv-shows
+      - /downloads/tv-series:/tv-series
+      - /downloads/movies:/new-movies
+
+  kodi-headless:
+    image: linuxserver/kodi-headless
+    restart: unless-stopped
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - TZ=Asia/Shanghai
+    ports:
+      - 8080:8080
+      - 9090:9090
+      - 9777:9777/udp
+    volumes:
+      - /data/kodi:/config/.kodi
