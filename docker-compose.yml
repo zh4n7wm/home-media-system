@@ -25,7 +25,6 @@ services:
       - /downloads:/downloads
 
   jellyfin:
-    # image: jellyfin/jellyfin
     image: jellyfin-locale-utf8
     build:
       context: ./jellyfin
@@ -44,7 +43,7 @@ services:
       - /data/jellyfin/video:/video
       - /mnt/movies:/movies
       - /mnt/tv-shows:/tv-shows
-      - /mnt/.av:/av
+      - /downloads/kids-english:/kids-english
       - /downloads/movies:/new-movies
       - /downloads/tv-series:/tv-series
     devices:
@@ -63,6 +62,7 @@ services:
       - /mnt/tv-shows:/tv-shows
       - /downloads/tv-series:/tv-series
       - /downloads/movies:/new-movies
+      - /downloads/kids-english:/kids-english
 
   kodi-headless:
     image: linuxserver/kodi-headless
